@@ -16,4 +16,5 @@ echo "loading names3D points"
 load_csv namen ./names_clean.csv OBJEKTART NAME E N
 echo "post processing"
 sudo -u postgres ./venv/bin/python3 post_process_db.py
-
+echo "dumping to file"
+sudo -u postgres pg_dump postgres > db.sql
