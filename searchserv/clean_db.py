@@ -1,0 +1,23 @@
+import psycopg as db
+from db_connect import db_connect   
+
+conn, curs = db_connect()
+curs.execute("drop index if exists ix_ort_geo;")
+curs.execute("drop index if exists ix_ort;")
+curs.execute("drop index if exists ix_ort_plz;")
+curs.execute("drop table if exists import.ortschaften;")
+curs.execute("drop index if exists ix_str;")
+curs.execute("drop index if exists ix_str_geo;")
+curs.execute("drop table if exists import.strassen;")
+curs.execute("drop index if exists ix_adr;")
+curs.execute("drop index if exists ix_adr_geo;")
+curs.execute("drop table if exists import.adressen;")
+curs.execute("drop index if exists ix_nam;")
+curs.execute("drop index if exists ix_nam_geo;")
+curs.execute("drop table if exists import.namen;")
+curs.execute("drop schema if exists import;")
+curs.execute("create schema import;")
+curs.execute("create extension if not exists postgis;")
+conn.commit()
+curs.close()
+conn.close()

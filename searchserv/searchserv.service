@@ -1,0 +1,20 @@
+[Unit]
+Description=ZS-search
+After=network.target
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=postgres
+Group=postgres
+
+WorkingDirectory=/home/zso/zsk/release/searchserv
+PrivateTmp=true
+
+ExecStart=/home/zso/zsk/release/searchserv/venv/bin/uvicorn search:app
+ExecReload=/bin/kill -HUP ${MAINPID}
+RestartSec=1
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

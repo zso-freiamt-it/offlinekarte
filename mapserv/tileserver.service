@@ -1,0 +1,16 @@
+[Unit]
+Description=X Virtual Frame Buffer Service for TileServer-GL
+After=tileserver-xvfb.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+Environment="DISPLAY=:99.0"
+WorkingDirectory=/home/zso/zsk/release/mapserv/data
+ExecStart=tileserver-gl -p 8080
+ExecStop=/bin/kill -15 $MAINPID
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

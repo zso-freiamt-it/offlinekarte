@@ -1,0 +1,35 @@
+{
+    "options": {
+        "paths": {
+            "fonts": "klokantech-gl-fonts",
+			"sprites": "./osm-style"
+        },
+        "domains": [
+            "localhost:8080",
+            "127.0.0.1:8080"
+        ],
+        "formatQuality": {
+            "jpeg": 80,
+            "webp": 90
+        },
+        "maxScaleFactor": 3,
+        "maxSize": 2048,
+        "pbfAlias": "pbf",
+        "serveAllFonts": true,
+        "serveAllStyles": false,
+        "serveStaticMaps": true,
+        "tileMargin": 5
+    },
+    "styles": {
+        "osm-bright": {
+            "style": "./osm-style/style.json"
+        }
+    },
+    "data": {
+        "switzerland" : {
+            "mbtiles": "tiles.mbtiles"
+        }
+    }
+
+}
+

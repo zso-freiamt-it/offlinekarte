@@ -1,0 +1,9 @@
+[submodule "mapserv/data/osm-bright-gl-style"]
+	path = mapserv/data/osm-bright-gl-style
+	url = https://github.com/openmaptiles/osm-bright-gl-style
+[submodule "mapserv/data/klokantech-gl-fonts"]
+	path = mapserv/data/klokantech-gl-fonts
+	url = https://github.com/klokantech/klokantech-gl-fonts
+[submodule "zskarte2"]
+	path = zskarte2
+	url = https://github.com/zso-freiamt-it/zskarte2
