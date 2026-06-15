@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - searchserv_pgdata:/var/lib/postgresql/data
+
+  searchserv-loader:
+    build:
+      context: ./searchserv-db-init
+    depends_on:
+      - db
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: postgres
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      INPUT_DIR: /input
+      OUTPUT_DIR: /out
+    volumes:
+      - ./input_data:/input:ro
+      - ./artifacts:/out
+    command: []
+
+volumes:
+  searchserv_pgdata:
