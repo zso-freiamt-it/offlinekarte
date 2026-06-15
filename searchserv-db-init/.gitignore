@@ -1,0 +1,5 @@
+*.csv
+*/*.csv
+*.sql
+__pycache__/
+venv/

@@ -1,6 +1,0 @@
-datenquellen:
-csv_LV95_LN02: swissnames3d
-
-pure_adr: amtl. address verzeichnis
-pure_str: amtl str verzeichnis
-AMTOVZ_CSV_WGS84: amtl ortschaftsverz mit plz

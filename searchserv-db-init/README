@@ -1,0 +1,16 @@
+# Datenquellen
+Alle csv Dateien in `input_data` auspacken
+
+- [csv_LV95_LN02 swissnames3d](https://www.swisstopo.admin.ch/en/landscape-model-swissnames3d) Neuestes CSV herunterladen bspw. swissnames3d_2026_2056.csv.zip
+
+- [pure_adr: amtl. address verzeichnis](https://www.swisstopo.admin.ch/de/amtliches-verzeichnis-der-gebaeudeadressen) Als csv Herunterladen bspw. amtliches-gebaeudeadressverzeichnis_ch_2056.csv.zip
+
+- [pure_str: amtl str verzeichnis](https://www.swisstopo.admin.ch/de/amtliches-verzeichnis-der-strassen) Als CSV herunterladen bspw. amtliches-strassenverzeichnis_ch_2056.csv.zip
+
+- [AMTOVZ_CSV_WGS84: amtl ortschaftsverz mit plz](https://www.swisstopo.admin.ch/de/amtliches-ortschaftenverzeichnis) Als CSV herunterladen WICHTIG mit Nummer 4326 statt 2056! Bspw. ortschaftenverzeichnis_plz_4326.csv.zip
+
+# Ausführung
+```
+docker compose build --no-cache searchserv-loader
+docker compose run --rm searchserv-loader
+```
