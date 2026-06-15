@@ -22,6 +22,7 @@ RUN python -m venv /workspace/searchserv/venv \
     && /workspace/searchserv/venv/bin/pip install --no-cache-dir -r requirements.txt
 
 COPY . ./
+RUN sed -i 's/\r$//' /workspace/searchserv/docker-entrypoint.sh /workspace/searchserv/load_db.sh
 RUN chmod +x /workspace/searchserv/load_db.sh /workspace/searchserv/docker-entrypoint.sh
 
 ENTRYPOINT ["/workspace/searchserv/docker-entrypoint.sh"]
