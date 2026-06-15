@@ -7,7 +7,7 @@ def db_connect():
     tries = 0
     while tries < 100:
         try:
-            conn = db.connect()
+            conn = db.connect("host=offlinekarte-search-db port=5432 user=postgres password=postgres")
             break;
         except db.OperationalError as ex:
             print(ex)
