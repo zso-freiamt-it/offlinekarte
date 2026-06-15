@@ -10,7 +10,7 @@ services:
 
   searchserv-loader:
     build:
-      context: ./searchserv-db-init
+      context: .
     depends_on:
       - db
     environment:
