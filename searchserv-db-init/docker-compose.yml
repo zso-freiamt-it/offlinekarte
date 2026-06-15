@@ -22,8 +22,8 @@ services:
       INPUT_DIR: /input
       OUTPUT_DIR: /out
     volumes:
-      - ./input_data:/input:ro
-      - ./artifacts:/out
+      - ./../input_data:/input:ro
+      - ./../artifacts:/out
     command: []
 
 volumes:
