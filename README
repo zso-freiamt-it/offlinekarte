@@ -1,5 +1,20 @@
-$ apt install nodejs npm
-$ npm install -g @angular/cli
-im zskarte2 folder:
-$ npm ci --legacy-peer-deps
-$ ng build
+# Prepare data
+## Prepare tiles
+TODO
+## Prepare geo database
+
+```
+cd TODO
+```
+
+# Customize env files
+
+## Tileserver
+
+Set the allowed host names in tileserver.env
+
+# Run
+
+```
+docker compose up -d
+```
