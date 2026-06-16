@@ -1,4 +1,4 @@
-AMTOVZ_CSV=${AMTOVZ_CSV:-./geo_data/AMTOVZ_CSV_WGS84.csv}
+AMTOVZ_CSV=${AMTOVZ_CSV:-./geo_data/AMTOVZ_CSV_WGS84/AMTOVZ_CSV_WGS84.csv}
 AMTOVZ_CSV_NORMALIZED=${AMTOVZ_CSV_NORMALIZED:-./geo_data/AMTOVZ_CSV_WGS84_plz.csv}
 PURE_STR_CSV=${PURE_STR_CSV:-./geo_data/amtliches-strassenverzeichnis_ch_2056.csv}
 PURE_ADR_CSV=${PURE_ADR_CSV:-./geo_data/amtliches-gebaeudeadressverzeichnis_ch_2056.csv}
