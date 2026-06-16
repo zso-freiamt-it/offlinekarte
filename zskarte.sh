@@ -7,9 +7,7 @@ if [ "$CMD" = "init" ]; then
     echo "Running INIT workflow..."
 
     docker compose -f mapserv-init/docker-compose.yml run --rm offlinekarte-tileserver-init
-
-    docker compose -f searchserv-db-init/docker-compose.yml build --no-cache searchserv-loader
-    docker compose -f searchserv-db-init/docker-compose.yml run --rm searchserv-loader
+    docker compose -f searchserv-db-init/docker-compose.yml up --build --abort-on-container-exit --exit-code-from searchserv-loader
 
     echo "Init complete."
 
