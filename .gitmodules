@@ -7,3 +7,6 @@
 [submodule "zskarte2"]
 	path = zskarte2
 	url = https://github.com/zso-freiamt-it/zskarte2
+[submodule "zskarte"]
+	path = zskarte
+	url = https://github.com/zso-freiamt-it/zskarte.git
