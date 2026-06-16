@@ -19,3 +19,4 @@ services:
       - "8080:8080"
     volumes:
       - ./mapserv/data:/data
+    env_file: tileserver.env
