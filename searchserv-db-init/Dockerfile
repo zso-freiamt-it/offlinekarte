@@ -24,6 +24,6 @@ RUN python -m venv /workspace/searchserv/venv \
 COPY . ./
 # convert line endings in case we're on windows
 RUN sed -i 's/\r$//' /workspace/searchserv/docker-entrypoint.sh /workspace/searchserv/load_db.sh
-RUN chmod +x /workspace/searchserv/load_db.sh /workspace/searchserv/docker-entrypoint.sh /workspace/searchserv/download_geo_data.sh
+RUN chmod +x /workspace/searchserv/load_db.sh /workspace/searchserv/docker-entrypoint.sh
 
 ENTRYPOINT ["/workspace/searchserv/docker-entrypoint.sh"]

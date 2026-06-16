@@ -4,15 +4,12 @@ services:
     container_name: offlinekarte-tileserver-init
     volumes:
       - ./../mapserv/data:/data
-    user: "root:root"
     command: >
       sh -c "
       set -e
 
       URL='https://vectortiles.geo.admin.ch/tiles/ch.swisstopo.base.vt/v1.0.0/ch.swisstopo.base.vt.mbtiles'
       OUT='/data/tiles.mbtiles'
-
-      rm -f "$$OUT"
 
       mkdir -p /data
 
@@ -27,8 +24,6 @@ services:
         echo 'ERROR: File is empty after download'
         exit 1
       fi
-
-      chmod a+rw "$$OUT"
 
       echo 'MBTiles downloaded and validated successfully.'
       "

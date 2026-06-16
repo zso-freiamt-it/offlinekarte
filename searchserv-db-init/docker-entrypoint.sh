@@ -22,3 +22,6 @@ sed 's/\r$//' load_db.sh | bash
 if [ -d "$OUTPUT_DIR" ]; then
     cp db.sql "$OUTPUT_DIR/db.sql"
 fi
+
+
+exit 0

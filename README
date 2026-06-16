@@ -1,20 +1,13 @@
-# Prepare data
-## Prepare tiles
-TODO
-## Prepare geo database
+# Initialize Database
+Before executing the docker containers, the tiles for the map server and the addresses for searchserver must be feched. For that the following command can be executed. It is recommended to rerun this command periodically e.g. once or twice a year.
 
 ```
-cd TODO
+zskarte init
 ```
 
-# Customize env files
-
-## Tileserver
-
-Set the allowed host names in tileserver.env
 
 # Run
 
 ```
-docker compose up -d
+zskarte start
 ```
