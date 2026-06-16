@@ -19,10 +19,9 @@ services:
       PGDATABASE: postgres
       PGUSER: postgres
       PGPASSWORD: postgres
-      OUTPUT_DIR: /workspace/searchserv/initdb.d
+      OUTPUT_DIR: /out
     volumes:
       - ./../searchserv/initdb.d:/out
-    command:
 
 volumes:
   searchserv_pgdata:

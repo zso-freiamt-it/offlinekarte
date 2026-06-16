@@ -2,7 +2,7 @@
 set -eu
 
 WORKDIR=/workspace/searchserv
-OUTPUT_DIR=${OUTPUT_DIR:-/out}
+OUTPUT_DIR=${/out}
 GEO_DATA_DIR=${GEO_DATA_DIR:-$WORKDIR/geo_data}
 DB_HOST=${PGHOST:-db}
 DB_PORT=${PGPORT:-5432}
