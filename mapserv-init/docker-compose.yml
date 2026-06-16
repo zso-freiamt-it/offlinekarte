@@ -11,6 +11,8 @@ services:
       URL='https://vectortiles.geo.admin.ch/tiles/ch.swisstopo.base.vt/v1.0.0/ch.swisstopo.base.vt.mbtiles'
       OUT='/data/tiles.mbtiles'
 
+      rm -f "$$OUT"
+
       mkdir -p /data
 
       echo 'Downloading MBTiles...'
@@ -24,6 +26,8 @@ services:
         echo 'ERROR: File is empty after download'
         exit 1
       fi
+
+      chmod a+rw /data/tiles.mbtiles
 
       echo 'MBTiles downloaded and validated successfully.'
       "
