@@ -16,10 +16,7 @@ echo Running INIT workflow...
 docker compose -f mapserv-init/docker-compose.yml run --rm offlinekarte-tileserver-init
 IF %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
 
-docker compose -f searchserv-db-init/docker-compose.yml build --no-cache searchserv-loader
-IF %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
-
-docker compose -f searchserv-db-init/docker-compose.yml run --rm searchserv-loader
+docker compose -f searchserv-db-init/docker-compose.yml up --build --abort-on-container-exit --exit-code-from searchserv-loader
 IF %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
 
 echo Init complete.
