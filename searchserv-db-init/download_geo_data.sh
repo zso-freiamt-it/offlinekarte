@@ -2,8 +2,6 @@
 
 set -euo pipefail
 
-echo "v4"
-
 GEO_DATA_DIR=${GEO_DATA_DIR:-/workspace/searchserv/geo_data}
 API_URL="https://ogd.swisstopo.admin.ch/services/swiseld/services/collections/ch.swisstopo.swissnames3d/assets"
 
