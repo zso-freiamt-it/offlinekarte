@@ -1,16 +1,37 @@
 #!/usr/bin/env bash
 
-# Exit immediately if a command exits with a non-zero status
-set -e
+set -euo pipefail
 
-echo "v3"
+echo "v4"
 
 GEO_DATA_DIR=${GEO_DATA_DIR:-/workspace/searchserv/geo_data}
 API_URL="https://ogd.swisstopo.admin.ch/services/swiseld/services/collections/ch.swisstopo.swissnames3d/assets"
 
-echo "Querying Swisstopo API for the latest swissnames3d dataset..."
+mkdir -p "$GEO_DATA_DIR"
 
-# 1. Fetch JSON from the API, extract the .csv.zip URLs, sort them, and grab the newest one
+download_and_extract() {
+    local url="$1"
+    local filename
+    local target_file
+
+    filename=$(basename "$url")
+    target_file="$GEO_DATA_DIR/$filename"
+
+    echo "Downloading $filename ..."
+    curl -fL --retry 3 -o "$target_file" "$url"
+
+    echo "Validating $filename ..."
+    unzip -t "$target_file" >/dev/null
+
+    echo "Extracting $filename ..."
+    unzip -o "$target_file" -d "$GEO_DATA_DIR"
+
+    echo "Cleaning up $filename ..."
+    rm -f "$target_file"
+}
+
+echo "Querying Swisstopo API for latest swissnames3d dataset..."
+
 DOWNLOAD_URL=$(
     curl -fsSL "$API_URL" \
     | tr '"' '\n' \
@@ -20,32 +41,21 @@ DOWNLOAD_URL=$(
 )
 
 if [[ -z "$DOWNLOAD_URL" ]]; then
-    echo "ERROR: No download URL found."
+    echo "ERROR: No swissnames3d download URL found."
     exit 1
 fi
 
-FILENAME=$(basename "$DOWNLOAD_URL")
+# Download latest SwissNames3D dataset
+download_and_extract "$DOWNLOAD_URL"
 
-# Safety check
-if [[ ! "$FILENAME" =~ ^swissnames3d_[0-9]{4}_2056\.csv\.zip$ ]]; then
-    echo "ERROR: Unexpected filename: $FILENAME"
-    exit 1
-fi
+# Download additional static datasets
+download_and_extract \
+    "https://data.geo.admin.ch/ch.swisstopo.amtliches-strassenverzeichnis/amtliches-strassenverzeichnis_ch/amtliches-strassenverzeichnis_ch_2056.csv.zip"
 
-mkdir -p "$GEO_DATA_DIR"
+download_and_extract \
+    "https://data.geo.admin.ch/ch.swisstopo-vd.ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz/ortschaftenverzeichnis_plz_4326.csv.zip"
 
-TARGET_FILE="$GEO_DATA_DIR/$FILENAME"
+download_and_extract \
+    "https://data.geo.admin.ch/ch.swisstopo.amtliches-gebaeudeadressverzeichnis/amtliches-gebaeudeadressverzeichnis_ch/amtliches-gebaeudeadressverzeichnis_ch_2056.csv.zip"
 
-echo "Downloading $DOWNLOAD_URL"
-curl -fL --retry 3 -o "$TARGET_FILE" "$DOWNLOAD_URL"
-
-echo "Validating ZIP archive..."
-unzip -t "$TARGET_FILE" >/dev/null
-
-echo "Extracting CSV files..."
-unzip -o "$TARGET_FILE" -d "$GEO_DATA_DIR"
-
-echo "Cleaning up..."
-rm -f "$TARGET_FILE"
-
-echo "Successfully updated dataset: $FILENAME"
+echo "All datasets successfully updated."
