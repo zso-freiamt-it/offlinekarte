@@ -4,6 +4,7 @@ services:
     container_name: offlinekarte-tileserver-init
     volumes:
       - ./../mapserv/data:/data
+    user: "root:root"
     command: >
       sh -c "
       set -e
@@ -27,7 +28,7 @@ services:
         exit 1
       fi
 
-      chmod a+rw /data/tiles.mbtiles
+      chmod a+rw "$$OUT"
 
       echo 'MBTiles downloaded and validated successfully.'
       "
