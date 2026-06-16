@@ -23,5 +23,3 @@ services:
     volumes:
       - ./../searchserv/initdb.d:/out
 
-volumes:
-  searchserv_pgdata:
