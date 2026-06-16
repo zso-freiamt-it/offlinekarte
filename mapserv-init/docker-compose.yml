@@ -1,0 +1,29 @@
+services:
+  offlinekarte-tileserver-init:
+    image: curlimages/curl
+    container_name: offlinekarte-tileserver-init
+    volumes:
+      - ./../mapserv/data:/data
+    command: >
+      sh -c "
+      set -e
+
+      URL='https://vectortiles.geo.admin.ch/tiles/ch.swisstopo.base.vt/v1.0.0/ch.swisstopo.base.vt.mbtiles'
+      OUT='/data/tiles.mbtiles'
+
+      mkdir -p /data
+
+      echo 'Downloading MBTiles...'
+
+      curl -L --fail --show-error --retry 5 --retry-delay 3 -o $$OUT $$URL
+
+
+      echo 'Validating download...'
+
+      if [ ! -s "$$OUT" ]; then
+        echo 'ERROR: File is empty after download'
+        exit 1
+      fi
+
+      echo 'MBTiles downloaded and validated successfully.'
+      "
