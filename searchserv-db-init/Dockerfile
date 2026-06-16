@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /workspace/searchserv
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends bash sudo ca-certificates wget gnupg libpq-dev gcc \
+    && apt-get install -y --no-install-recommends bash sudo curl unzip ca-certificates wget gnupg libpq-dev gcc \
     && install -d /etc/apt/keyrings \
     && wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/keyrings/postgresql.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
@@ -22,6 +22,7 @@ RUN python -m venv /workspace/searchserv/venv \
     && /workspace/searchserv/venv/bin/pip install --no-cache-dir -r requirements.txt
 
 COPY . ./
+# convert line endings in case we're on windows
 RUN sed -i 's/\r$//' /workspace/searchserv/docker-entrypoint.sh /workspace/searchserv/load_db.sh
 RUN chmod +x /workspace/searchserv/load_db.sh /workspace/searchserv/docker-entrypoint.sh
 
