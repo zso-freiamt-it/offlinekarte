@@ -6,8 +6,8 @@ conn, curs = db_connect()
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, 
-        allow_origins = ["http://localhost", "http://localhost:8000"],
-        allow_credentials=True, allow_methods=['*'], allow_headers=['*'])
+        allow_origins = ["*"],
+        allow_credentials=False, allow_methods=['*'], allow_headers=['*'])
 
 def attrdict(label, lon, lat):
     return {"attrs" : {"label": label, "lon": lon, "lat": lat}}
