@@ -5,9 +5,11 @@ services:
     volumes:
       - ./initdb.d:/docker-entrypoint-initdb.d
     env_file: "search-db.env"
+    restart: unless-stopped
   offlinekarte-search:
     build: .
     container_name: offlinekarte-search
     ports:
       - "8000:8000"
     env_file: "search.env"
+    restart: unless-stopped
