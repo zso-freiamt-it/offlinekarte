@@ -19,6 +19,9 @@ IF %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
 docker compose -f searchserv-db-init/docker-compose.yml up --build --abort-on-container-exit --exit-code-from searchserv-loader
 IF %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
 
+docker compose -f zskarte\docker-compose-init.yml up --build --abort-on-container-exit
+IF %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
+
 echo Init complete.
 exit /b 0
 
