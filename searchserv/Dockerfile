@@ -18,7 +18,6 @@ RUN apt install libpq5
 COPY --from=build /venv /venv
 
 COPY ./search.py .
-COPY ./db_connect.py .
 
 EXPOSE 8000
 

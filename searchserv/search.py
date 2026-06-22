@@ -3,9 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from psycopg_pool import AsyncConnectionPool
 from contextlib import asynccontextmanager
 from typing import List
+import os
 
-pool = AsyncConnectionPool("host=offlinekarte-search-db "
-  "port=5432 user=postgres password=postgres", open=False)
+pool = AsyncConnectionPool(
+  "host=offlinekarte-search-db "
+  f"port={os.environ.get('SEARCH_DB_PORT', 5432)} "
+  f"user={os.environ.get('SEARCH_DB_USER', 'postgres')} "
+  f"password={os.environ.get('SEARCH_DB_PASSWORD', 'postgres')} "
+  , open=False)
 
 @asynccontextmanager
 async def lifespan(instance: FastAPI):
