@@ -1,6 +1,6 @@
 services:
   offlinekarte-search-db:
-    image: postgis/postgis
+    image: postgis/postgis:18-3.6
     container_name: offlinekarte-search-db
     volumes:
       - ./initdb.d:/docker-entrypoint-initdb.d
