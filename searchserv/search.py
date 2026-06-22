@@ -32,10 +32,11 @@ class QueryBuilder:
         self.args = ()
         self.conds = []
         self.order = ""
+        self.limit = 50
     def finish(self):
         self.query += "where " + " and ".join(self.conds) + " "
         self.query += self.order
-        self.query += "limit 50;"
+        self.query += f"limit {self.limit};"
         return self.query, self.args
     def extendArgs(self, *a):
         self.args = (*self.args, *a)
@@ -60,6 +61,9 @@ class QueryBuilder:
                         "ST_Transform(ST_MakeEnvelope(%s,%s,%s,%s,21781), 4326))"]
         self.extendArgs(*bbox)
         return self
+    def limitBy(self, limit):
+        self.limit = limit
+        return self
     async def execOn(self, curs):
         query, args = self.finish()
         if debugExplain:
@@ -71,7 +75,7 @@ class QueryBuilder:
 def attrdict(label, lon, lat):
     return {"attrs" : {"label": label, "lon": lon, "lat": lat}}
 
-async def get_ort_by_PLZ(curs, text, bbox, sortbbox):
+async def get_ort_by_PLZ(curs, text, bbox, sortbbox, limit):
     if not all(x.isdigit() for x in text):
         return []
     await (
@@ -79,53 +83,58 @@ async def get_ort_by_PLZ(curs, text, bbox, sortbbox):
         .nameCheck("PLZ", text)
         .bbox("ST_Point(E :: real, N :: real, 4326)", bbox)
         .orderBy("ST_Point(E :: real, N :: real, 4326)", bbox, sortbbox)
+        .limitBy(limit)
         .execOn(curs)
     )
     return [attrdict(f"<i>Ort</i> <b>{plz} {name}</b>", e, n)
             for name, plz, e, n, *_ in await curs.fetchall()]
 
-async def get_ort(curs, text, bbox, sortbbox):
+async def get_ort(curs, text, bbox, sortbbox, limit):
     await (
       QueryBuilder("ortschaftsname, PLZ, E, N", "import.ortschaften")
         .nameCheck("lower(ortschaftsname)", text)
         .bbox("ST_Point(E :: real, N :: real, 4326)", bbox)
         .orderBy("ST_Point(E :: real, N :: real, 4326)", bbox, sortbbox)
+        .limitBy(limit)
         .execOn(curs)
     )
     return [attrdict(f"<i>Ort</i> <b>{plz} {name}</b>", e, n)
             for name, plz, e, n, *_ in await curs.fetchall()]
 
-async def get_strasse(curs, text, bbox, sortbbox):
+async def get_strasse(curs, text, bbox, sortbbox, limit):
     await (
       QueryBuilder("STN_LABEL, ZIP_LABEL, ST_x(wgs_point), ST_y(wgs_point)",
            "import.strassen")
          .nameCheck("full_str_lower", text.replace(',',''))
          .bbox("wgs_point", bbox)
          .orderBy("wgs_point", bbox, sortbbox)
+         .limitBy(limit)
          .execOn(curs)
     )
     return [attrdict(f"<i>Str</i> <b>{lbl}</b>, {zpl}", e, n)
             for lbl, zpl, e, n, *_ in await curs.fetchall()]
 
-async def get_addr(curs, text, bbox, sortbbox):
+async def get_addr(curs, text, bbox, sortbbox, limit):
     await (
       QueryBuilder("STN_LABEL, ADR_NUMBER, ZIP_LABEL, ST_x(wgs_point), ST_y(wgs_point)",
           "import.adressen")
         .nameCheck("full_addr_lower", text.replace(',',''))
         .bbox("wgs_point", bbox)
         .orderBy("wgs_point", bbox, sortbbox)
+        .limitBy(limit)
         .execOn(curs)
     )
     return [attrdict(f"<i>Adr</i> <b> {st} {an}</b>, {zl}", e, n)
             for st, an, zl, e, n, *_ in await curs.fetchall()]
 
-async def get_lname(curs, text, bbox, sortbbox):
+async def get_lname(curs, text, bbox, sortbbox, limit):
     await (
       QueryBuilder("NAME, OBJEKTART, closest_town, closest_town_plz, "
           "ST_x(wgs_point), ST_y(wgs_point)", "import.namen")
         .nameCheck("full_name_lower", text.replace(',',''))
         .bbox("wgs_point", bbox)
         .orderBy("wgs_point", bbox, sortbbox)
+        .limitBy(limit)
         .execOn(curs)
     )
     return [attrdict(f"<i>{oa}</i> <b>{name}</b>, <i>Nähe</i> {ctplz} {ct}", e, n)
@@ -136,13 +145,15 @@ async def get_lname(curs, text, bbox, sortbbox):
 async def func(type: str = "",
       searchText: str = "",
       bbox: str = None,
-      sortbbox: bool = False):
+      sortbbox: bool = False,
+      limit: int = 50):
     if bbox is not None:
         bbox = bbox.split(',')
         if len(bbox) != 4:
             print("unexpected bbox size")
             bbox = None
             sortbbox = False
+    limit = max(1, min(limit, 100))
     print("bbox:", bbox)
     print("sortbbox:", sortbbox)
     searchText = searchText.strip();
@@ -150,11 +161,15 @@ async def func(type: str = "",
     async with pool.connection() as conn:
         async with conn.cursor() as curs:
             l = []
-            l += await get_ort_by_PLZ(curs, searchText, bbox, sortbbox)
-            if(len(l) < 50): l += await get_ort(curs, searchText, bbox, sortbbox)
-            if(len(l) < 50): l += await get_strasse(curs, searchText, bbox, sortbbox)
-            if(len(l) < 50): l += await get_lname(curs, searchText, bbox, sortbbox)
-            if(len(l) < 50): l += await get_addr(curs, searchText, bbox, sortbbox)
+            l += await get_ort_by_PLZ(curs, searchText, bbox, sortbbox, limit)
+            if(len(l) < limit):
+                l += await get_ort(curs, searchText, bbox, sortbbox, limit-len(l))
+            if(len(l) < limit):
+                l += await get_strasse(curs, searchText, bbox, sortbbox, limit-len(l))
+            if(len(l) < limit):
+                l += await get_lname(curs, searchText, bbox, sortbbox, limit-len(l))
+            if(len(l) < limit):
+                l += await get_addr(curs, searchText, bbox, sortbbox, limit-len(l))
             return {"results":l}
     
 
