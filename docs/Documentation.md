@@ -8,7 +8,8 @@ graph TD;
     A[Angular Frontend ZS-Karte] --> B[Strapi Backend ZS-Karte];
     B-->E[(Postgres DB ZS-Karte)]
     A-->C[(Tile Server Offlinekarte)];
-    A-->D[(Search Server Offlinekarte)];
+    A-->D[Search Server Offlinekarte];
+    D-->F[(Search Server DB Offlinekarte)];
 ```
 
 ## Search server
@@ -42,17 +43,36 @@ The map layer is integrated into zskarte as an additional map layer `Basiskarten
 The data for the tile server is obtained automatically during the initialization phase of the project. It is recommended to update the data on a regular basis in a 6 to 12 month interval.  
 The data fetched is optained from the following source: [Geo Admin Vector Tiles](https://docs.geo.admin.ch/visualize-data/vector-tiles.html)
 
-## NTP layer AG
-For offline use, a layer with NTPs has been added. The layer can be opened by searching in the list of available layers and is called `NTP Notfalltreffpunkte Offline AG`.
+## Offline map layers (Ebenen)
+Since the ZS Karte requests map layers (Ebenen) directly from third party APIs (e.g. Geo admin) these functions would not be available in case of internet failure. For this reason, some map layers were made offline compatible and integrated in the selection of available map layers (Ebenen).
 
-<img src="images/NTPOfflineLayer1.png" alt="Screenshot NTP offline layer" width="50%" height="50%">
-<img src="images/NTPOfflineLayer2.png" alt="Screenshot NTP offline layer" width="100%" height="100%">
+<img src="images/OfflineLayersSearch.png" alt="Screenshot NTP offline layer" width="50%" height="50%">
+
+Unless specified otherwise, the data needed for the layers are gathered during the initialization phase.  It is recommended to update the data on a regular basis in a 6 to 12 month interval. The data is then placed within the zskarte folder and is therefore available directly within the application without the need of a internet connection. During initialization of the zskarte database the layers are created alongside the default layers from zskarte.
+
+
+
+
+## Notfalltreffpunkt NTP layer Aargau
+For offline use, a layer with NTPs has been added. The layer can be opened by searching in the list of available layers and is called `NTP Notfalltreffpunkte AG Offline`.
+
+<img src="images/NTPOfflineLayer.png" alt="Screenshot NTP offline layer" width="100%" height="100%">
 
 ### Data source
-The data for the tile server is obtained automatically during the initialization phase of the project. It is recommended to update the data on a regular basis in a 6 to 12 month interval.
 
 The data fetched is optained from the following source: [Geo Admin BABS Notfalltreffpunkte](https://data.geo.admin.ch/browser/index.html#/collections/ch.babs.notfalltreffpunkte/items/notfalltreffpunkte). 
 
 Note: While the API provides all NTPs in Switzerland, the list is filtered to only include NTPs in Aargau.
 
-After fetching the NTPs are stored in the `GeoJSON` format in the zskarte submodule. The zskarte db init script has been extended with a script to add `NTP Notfalltreffpunkte Offline AG` as a layer.  
+After fetching the NTPs are stored in the `GeoJSON` format.
+
+## ZSO Organisationen Aargau Offline
+A layer showing the Zivilschutz Organisationen in Aargau has been added. The layer can be opened by searching in the list of available layers and is called `ZSO Organisationen AG Offline`.
+
+<img src="images/ZsoOrgsLayer.png" alt="Screenshot NTP offline layer" width="100%" height="100%">
+
+### Data source
+
+The data fetched is optained from the following source: [Kanton Aargau Geodaten Bevölkerungsschutzregionen](https://www.ag.ch/de/themen/staat-politik/daten-und-zahlen/geoportal/geodaten/geodatenliste?rewriteRemoteUrl=/details/AGIS.amb_bsr/Shapefile)
+
+The data is in the Shapefile format and is stored as is in the zip format.
