@@ -12,6 +12,9 @@ pool = AsyncConnectionPool(
   f"password={os.environ.get('SEARCH_DB_PASSWORD', 'postgres')} "
   , open=False)
 
+SORT_ORIGIN_E = os.environ.get('SEARCH_SORT_ORIGIN_E', '8.30882407298')
+SORT_ORIGIN_N = os.environ.get('SEARCH_SORT_ORIGIN_N', '47.3038127715')
+
 @asynccontextmanager
 async def lifespan(instance: FastAPI):
     await pool.open()
@@ -33,39 +36,46 @@ class QueryBuilder:
         self.conds = []
         self.order = ""
         self.limit = 50
-    def finish(self):
+
+    def _finish(self):
         self.query += "where " + " and ".join(self.conds) + " "
         self.query += self.order
         self.query += f"limit {self.limit};"
         return self.query, self.args
-    def extendArgs(self, *a):
+
+    def _extendArgs(self, *a):
         self.args = (*self.args, *a)
+
     def nameCheck(self, col, text):
         self.conds += [f"{col} like lower(%s || '%%')"]
-        self.extendArgs(text)
+        self._extendArgs(text)
         return self
+
     def orderBy(self, col, bbox, sortbbox):
         if sortbbox and bbox is not None:
             self.order = (f"order by {col} <-> "
                            "ST_Transform(ST_Centroid("
                              "ST_MakeEnvelope(%s,%s,%s,%s,21781)), 4326) ")
-            self.extendArgs(*bbox)
+            self._extendArgs(*bbox)
         else:
             self.order = (f"order by {col} <-> "
-                           "ST_Point(8.30882407298, 47.3038127715, 4326) ")
+                          f"ST_Point({SORT_ORIGIN_E}, {SORT_ORIGIN_N}, , 4326) ")
         return self
+
     def bbox(self, here, bbox):
         if bbox is None:
             return self
         self.conds += [f"ST_Within({here},"
                         "ST_Transform(ST_MakeEnvelope(%s,%s,%s,%s,21781), 4326))"]
-        self.extendArgs(*bbox)
+        self._extendArgs(*bbox)
         return self
+
     def limitBy(self, limit):
         self.limit = limit
         return self
+
     async def execOn(self, curs):
-        query, args = self.finish()
+        query, args = self._finish()
         if debugExplain:
             await curs.execute("explain " + query, args)
             print("\nquery:\n---\n", self.query, "\n---\n",
