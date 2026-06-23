@@ -59,7 +59,7 @@ class QueryBuilder:
             self._extendArgs(*bbox)
         else:
             self.order = (f"order by {col} <-> "
-                          f"ST_Point({SORT_ORIGIN_E}, {SORT_ORIGIN_N}, , 4326) ")
+                          f"ST_Point({SORT_ORIGIN_E}, {SORT_ORIGIN_N}, 4326) ")
         return self
 
     def bbox(self, here, bbox):
