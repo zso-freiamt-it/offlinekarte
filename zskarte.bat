@@ -1,37 +1,49 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
-set CMD=%1
+set CMD=%~1
+set FLAG=%~2
 
-if "%CMD%"=="init" goto init
-if "%CMD%"=="start" goto start
+if /I "%CMD%"=="init" (
+    echo Running INIT workflow...
 
-echo Usage: zskarte.bat init ^| start
-exit /b 1
+    docker compose -f mapserv-init/docker-compose.yml run --rm offlinekarte-tileserver-init
+    docker compose -f searchserv-db-init/docker-compose.yml up --build --abort-on-container-exit --exit-code-from searchserv-loader
+    docker compose -f zskarte/docker-compose-init.yml up --build --abort-on-container-exit
 
+    echo Init complete.
 
-:init
-echo Running INIT workflow...
+) else if /I "%CMD%"=="update" (
+    echo Running UPDATE workflow for zskarte...
 
-docker compose -f mapserv-init/docker-compose.yml run --rm offlinekarte-tileserver-init
-IF %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
+    cd zskarte
+    docker compose down
+    cd ..
+    docker compose down
 
-docker compose -f searchserv-db-init/docker-compose.yml up --build --abort-on-container-exit --exit-code-from searchserv-loader
-IF %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
+    echo Containers stopped.
+    call "%~nx0" init
 
-docker compose -f zskarte\docker-compose-init.yml up --build --abort-on-container-exit
-IF %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
+    echo Starting zskarte services...
+    call "%~nx0" start -b
+    echo Init complete for zskarte.
 
-echo Init complete.
-exit /b 0
+) else if /I "%CMD%"=="start" (
+    set "BUILD_ARG="
+    
+    if /I "%FLAG%"=="-b" (
+        set "BUILD_ARG=--build"
+        echo Starting services and forcing build...
+    ) else (
+        echo Starting services...
+    )
 
+    docker compose -f zskarte/docker-compose.yml up -d !BUILD_ARG!
+    docker compose up -d !BUILD_ARG!
 
-:start
-echo Starting services...
+    echo Services started.
 
-REM TODO: adjust to your real runtime setup
-docker compose up -d
-IF %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
-
-echo Services started.
-exit /b 0
+) else (
+    echo Usage: %~nx0 {init^|update^|start [-b]}
+    exit /b 1
+)
