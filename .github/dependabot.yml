@@ -1,6 +1,5 @@
 version: 2
 updates:
-  # Example for Node.js / npm
   - package-ecosystem: "pip"
     directory: "/"
     exclude-paths:
@@ -10,7 +9,6 @@ updates:
     schedule:
       interval: "weekly"
 
-  # Example for keeping GitHub Actions up to date
   - package-ecosystem: "docker"
     directory: "/"
     target-branch: "zskarte/dev"
