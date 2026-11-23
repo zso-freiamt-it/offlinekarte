@@ -18,11 +18,3 @@ Before executing the Docker containers, all local data must first be fetched. Fo
 ```
 zskarte init
 ```
-
-TODO:
-- Update urls in environment.ts
-- Update urls in tileserver.env
-- Add user in db init script
-- Traffic?
-- run docker containers
-
