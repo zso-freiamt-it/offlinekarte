@@ -1,5 +1,0 @@
-$ apt install nodejs npm
-$ npm install -g @angular/cli
-im zskarte2 folder:
-$ npm ci --legacy-peer-deps
-$ ng build

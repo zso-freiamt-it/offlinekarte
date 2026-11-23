@@ -1,0 +1,11 @@
+include:
+  - ./searchserv/docker-compose.yml
+services:
+  offlinekarte-tileserver:
+    image: maptiler/tileserver-gl
+    container_name: offlinekarte-tileserver
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./mapserv/data:/data
+    env_file: tileserver.env
