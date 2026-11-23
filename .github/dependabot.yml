@@ -6,13 +6,13 @@ updates:
     exclude-paths:
       - "mapserv-init/**"
       - "searchserv-db-init/**"
-    target-branch: "develop"
+    target-branch: "zskarte/dev"
     schedule:
       interval: "weekly"
 
   # Example for keeping GitHub Actions up to date
   - package-ecosystem: "docker"
     directory: "/"
-    target-branch: "develop"
+    target-branch: "zskarte/dev"
     schedule:
       interval: "weekly"
